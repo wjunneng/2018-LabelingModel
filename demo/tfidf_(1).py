@@ -68,11 +68,11 @@ class tfidf:
 
 if __name__ == '__main__':
     # 题目
-    path = '../data/题目-类别.xls'
-    stopKeyPath = '../'
-    savePath = '../data/tfidfQuestionResult.xls'
-    topK = 10
-    tfidf(path, savePath, topK).titleTfidf()
+    # path = '../data/题目-类别.xls'
+    # stopKeyPath = '../'
+    # savePath = '../data/tfidfQuestionResult.xls'
+    # topK = 10
+    # tfidf(path, savePath, topK).titleTfidf()
 
     # 知识点
     path = '../data/知识点-类别.xls'
