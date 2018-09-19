@@ -2,33 +2,17 @@
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
-import sklearn.svm as svm
+from sklearn.multiclass import OneVsOneClassifier
+from sklearn.svm import LinearSVC
+from sklearn.model_selection import cross_val_score
 
 class tfidf:
-    def __init__(self, path, savePath, topK):
+    def __init__(self, path, savePath):
         self.path = path
         self.savePath = savePath
         self.data = pd.read_excel(path)
         self.data[u'关键词'] = ''
         self.data[u'权重'] = ''
-        self.topK = topK
-
-    def Accuracy(self, classifier, X, Y):
-        print(X, len(Y))
-        # 返回准确率
-        result = classifier.predict(X)
-        print(result)
-        num = len(X)
-        num_error = 0
-        for i in range(0, num):
-            if result[i] != Y[i]:
-                num_error += 1
-
-        print("总测试个数：" + str(num))
-        print("错误个数: " + str(num_error))
-        print("正确率：" + "  " + str((num - num_error) / num))
-
-        return (num - num_error) / num
 
     def titleTfidf(self):
         corpus = list(self.data[u'题目'])
@@ -52,29 +36,21 @@ class tfidf:
 
         # 打乱数据
         self.data = self.data.sample(frac=1).reset_index(drop=True)
-        # 训练集数据数目
-        trainTextNumber = int(self.data.shape[0] * 0.6)
         # 权重列
         weights = []
         for i in self.data[u'权重'].tolist():
-            weights.append([float(j) for j in i.split(' ')])
+            tmp = [float(j) for j in i.split(' ')]
+            weights.append([i/sum(tmp) for i in tmp])
 
         # 知识点列
         categorys = [int(str(i).split(' ')[0]) for i in self.data[u'知识点编号'].tolist()]
-        # 训练集X
-        trainX = weights[0:trainTextNumber]
-        # 训练集类别Y
-        trainY = categorys[0:trainTextNumber]
-        # 测试集X
-        testX = weights[trainTextNumber:]
-        # 测试集类别Y
-        testY = categorys[trainTextNumber:]
-        # rbfSVM
-        classifier = svm.SVC(kernel='rbf')
-        # 训练分类器
-        classifier.fit(trainX, trainY)
-        # 返回准确率
-        tmp = self.Accuracy(classifier, testX, testY)
+        # SVC
+        classifier = OneVsOneClassifier(LinearSVC(random_state=0))
+        # 这里的cross_val_score将交叉验证的整个过程连接起来，不用再进行手动的分割数据
+        # cv参数用于规定将原始数据分成多少份
+        scores = cross_val_score(classifier, weights, categorys, cv=10, scoring='accuracy')
+        # 计算平均准确率
+        print(scores.mean())
 
 
 if __name__ == '__main__':
@@ -82,5 +58,4 @@ if __name__ == '__main__':
     path = '../data/题目-类别.xls'
     stopKeyPath = '../'
     savePath = '../data/tfidfQuestionResult.xls'
-    topK = 10
-    tfidf(path, savePath, topK).titleTfidf()
+    tfidf(path, savePath).titleTfidf()
