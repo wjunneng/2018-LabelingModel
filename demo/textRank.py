@@ -41,10 +41,18 @@ class textRank(object):
         # cv参数用于规定将原始数据分成多少份
         scores = cross_val_score(classifier, dataset, target, cv=10, scoring='accuracy')
         # 计算平均准确率
-        print(scores.mean())
+        return scores.mean()
 
 
 if __name__ == '__main__':
-    path = u'../data/题目-类别.xls'
-    stopWordPath = u'../data/stopWord.txt'
-    textRank(path, stopWordPath).Main()
+    import time
+
+    start = time.clock()
+    tmp = 0
+    for i in range(10):
+        path = u'../data/题目-类别.xls'
+        stopWordPath = u'../data/stopWord.txt'
+        result = textRank(path, stopWordPath).Main()
+        tmp += result
+    print(tmp/10)
+    print(time.clock() - start)

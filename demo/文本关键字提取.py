@@ -75,12 +75,12 @@ class DealData:
 
 
 if __name__ == '__main__':
-    # path = "../data/大信-题目-全部.xls"
-    # savePath = "../data/题目-类别.xls"
-    # stopWordsPath = "../data/stopWord.xlsx"
-    # DealData(path, savePath, stopWordsPath).dealTitle()
-
-    path = "../data/一级（信息技术基础）-Revision-知识点.xlsx"
-    savePath = "../data/知识点-类别.xls"
+    path = "../data/大信-题目-全部.xls"
+    savePath = "../data/题目-类别.xls"
     stopWordsPath = "../data/stopWord.xlsx"
-    DealData(path, savePath, stopWordsPath).DealKnolwledge()
+    DealData(path, savePath, stopWordsPath).dealTitle()
+
+    # path = "../data/一级（信息技术基础）-Revision-知识点.xlsx"
+    # savePath = "../data/知识点-类别.xls"
+    # stopWordsPath = "../data/stopWord.xlsx"
+    # DealData(path, savePath, stopWordsPath).DealKnolwledge()
